@@ -22,10 +22,10 @@ add_library(
     dns_resolver_headers
     INTERFACE
 )
-target_include_directories(
+target_sources(
     dns_resolver_headers
     INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    FILE_SET dns_resolver_headers_set TYPE HEADERS FILES ${CMAKE_CURRENT_SOURCE_DIR}/dns_resolver.h
 )
 
 add_library(
@@ -35,7 +35,7 @@ add_library(
 )
 target_link_libraries(
     dns_resolver_obj
-    PUBLIC
+    PRIVATE
     dns_resolver_common
     dns_resolver_headers
     dns_resolver_impl_headers
@@ -44,12 +44,29 @@ target_link_libraries(
 add_library(
     dns_resolver_st
     STATIC
+    $<TARGET_OBJECTS:dns_resolver_obj>
+    $<TARGET_OBJECTS:dns_resolver_impl_obj>
 )
 target_link_libraries(
     dns_resolver_st
     PUBLIC
-    dns_resolver_common
     dns_resolver_headers
-    $<TARGET_OBJECTS:dns_resolver_obj>
-    dns_resolver_impl_obj
+    c-ares
+)
+
+install(
+    TARGETS dns_resolver_st dns_resolver_headers
+    EXPORT dns_resolver
+    ARCHIVE
+    COMPONENT Development
+    PUBLIC_HEADER
+    COMPONENT Development
+    FILE_SET dns_resolver_headers_set
+    COMPONENT Development
+)
+install(
+    EXPORT dns_resolver
+    NAMESPACE eag::
+    DESTINATION lib/cmake/dns_resolver
+    COMPONENT Development
 )

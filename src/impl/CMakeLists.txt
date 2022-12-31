@@ -23,8 +23,9 @@ add_library(
 )
 target_link_libraries(
     dns_resolver_impl_obj
-    PUBLIC
+    PRIVATE
     dns_resolver_common
     dns_resolver_impl_headers
+    PUBLIC
     c-ares
 )

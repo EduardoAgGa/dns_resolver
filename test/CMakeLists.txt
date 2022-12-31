@@ -22,14 +22,16 @@ add_executable(
     dns_resolver_unittests
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/dns_resolver_test.cpp
+    $<TARGET_OBJECTS:resolver_fakes_obj>
+    $<TARGET_OBJECTS:dns_resolver_obj>
 )
 target_link_libraries(
     dns_resolver_unittests
     PRIVATE
     dns_resolver_common
     dns_resolver_headers
-    $<TARGET_OBJECTS:dns_resolver_obj>
-    resolver_fakes_obj
+    dns_resolver_impl_headers
+    resolver_fakes_headers
     doctest
 )
 
@@ -37,12 +39,14 @@ add_executable(
     fake_resolver_unittests
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fake_resolver_test.cpp
+    $<TARGET_OBJECTS:resolver_fakes_obj>
 )
 target_link_libraries(
     fake_resolver_unittests
     PRIVATE
     dns_resolver_common
-    resolver_fakes_obj
+    dns_resolver_impl_headers
+    resolver_fakes_headers
     doctest
 )
 

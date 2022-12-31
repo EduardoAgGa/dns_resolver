@@ -23,8 +23,9 @@ add_library(
 )
 target_link_libraries(
     resolver_fakes_obj
-    PUBLIC
+    PRIVATE
     dns_resolver_common
-    resolver_fakes_headers
     dns_resolver_impl_headers
+    PUBLIC
+    resolver_fakes_headers
 )
