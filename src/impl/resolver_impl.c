@@ -47,9 +47,8 @@ void dns_callback_addrinfo(void* arg, int status, int timeouts, struct ares_addr
 
   char* address = (char*)arg;
   char ip[INET_ADDRSTRLEN];
-  int i;
   struct ares_addrinfo_node* nodes = result->nodes;
-  for (i = 0; nodes != NULL; ++i, nodes = nodes->ai_next) {
+  for (; nodes != NULL; nodes = nodes->ai_next) {
     inet_ntop(nodes->ai_family, nodes->ai_addr->sa_data, ip, sizeof(ip));
     if (nodes->ai_family == AF_INET) {
       inet_ntop(nodes->ai_family, (&((struct sockaddr_in*)nodes->ai_addr)->sin_addr), ip,

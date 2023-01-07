@@ -16,24 +16,24 @@ static const char* expected_valid_address = "1.2.3.4";
 static const char* expected_max_length_address = "123.123.123.123";
 static const char* expected_empty_address = "";
 
-class DnsResolver {
+class dns_resolver {
   public:
-  DnsResolver() {
+  dns_resolver() {
     dns_resolver_create();
   }
-  ~DnsResolver() {
+  ~dns_resolver() {
     dns_resolver_destroy();
   }
 };
 
-TEST_CASE_FIXTURE(DnsResolver, "Localhost always resolves to 127.0.0.1") {
+TEST_CASE_FIXTURE(dns_resolver, "Localhost always resolves to 127.0.0.1") {
   char* address;
   dns_resolve_hostname(localhost_name, valid_nameserver, &address);
 
   REQUIRE_EQ(0, strcmp(expected_localhost_addr, address));
 }
 
-TEST_CASE_FIXTURE(DnsResolver, "An empty hostname is equivalent to localhost") {
+TEST_CASE_FIXTURE(dns_resolver, "An empty hostname is equivalent to localhost") {
   const char* hostname = "";
 
   char* address;
@@ -42,7 +42,7 @@ TEST_CASE_FIXTURE(DnsResolver, "An empty hostname is equivalent to localhost") {
   REQUIRE_EQ(0, strcmp(expected_localhost_addr, address));
 }
 
-TEST_CASE_FIXTURE(DnsResolver, "An empty nameserver is is equivalent to localhost") {
+TEST_CASE_FIXTURE(dns_resolver, "An empty nameserver is is equivalent to localhost") {
   const char* nameserver = "";
 
   char* address;
@@ -51,7 +51,7 @@ TEST_CASE_FIXTURE(DnsResolver, "An empty nameserver is is equivalent to localhos
   REQUIRE_EQ(0, strcmp(expected_localhost_addr, address));
 }
 
-TEST_CASE_FIXTURE(DnsResolver, "Querying the nameserver for a valid hostname succeeds") {
+TEST_CASE_FIXTURE(dns_resolver, "Querying the nameserver for a valid hostname succeeds") {
   fake_resolver_expect_address(expected_valid_address);
 
   char* address;
@@ -60,7 +60,7 @@ TEST_CASE_FIXTURE(DnsResolver, "Querying the nameserver for a valid hostname suc
   REQUIRE_EQ(0, strcmp(expected_valid_address, address));
 }
 
-TEST_CASE_FIXTURE(DnsResolver, "Reusing address for another query is allowed") {
+TEST_CASE_FIXTURE(dns_resolver, "Reusing address for another query is allowed") {
   fake_resolver_expect_address(expected_valid_address);
 
   char* address;
@@ -70,7 +70,7 @@ TEST_CASE_FIXTURE(DnsResolver, "Reusing address for another query is allowed") {
   REQUIRE_EQ(0, strcmp(expected_valid_address, address));
 }
 
-TEST_CASE_FIXTURE(DnsResolver, "On query timeout, the address is empty") {
+TEST_CASE_FIXTURE(dns_resolver, "On query timeout, the address is empty") {
   fake_resolver_expect_address(expected_empty_address);
 
   char* address;
@@ -79,7 +79,7 @@ TEST_CASE_FIXTURE(DnsResolver, "On query timeout, the address is empty") {
   REQUIRE_EQ(0, strcmp(expected_empty_address, address));
 }
 
-TEST_CASE_FIXTURE(DnsResolver, "An IPv4 address has a maximum of 15 characters") {
+TEST_CASE_FIXTURE(dns_resolver, "An IPv4 address has a maximum of 15 characters") {
   fake_resolver_expect_address(expected_max_length_address);
 
   char* address;
