@@ -34,6 +34,5 @@ The library is implemented using the C language, and can be used in both C and C
 It only allows IPv4 protocol and A register resolution for now. Query timeouts and tries are also hardcoded right now.
 
 ## Future work
-- Install targets
 - Provide a C++ wrapper
 - Support IPv6

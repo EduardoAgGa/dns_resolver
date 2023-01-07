@@ -21,6 +21,12 @@ add_library(
     OBJECT
     ${CMAKE_CURRENT_SOURCE_DIR}/resolver_impl.c
 )
+target_compile_options(
+    dns_resolver_impl_obj
+    PRIVATE
+    $<$<CONFIG:Debug>:-Wall>
+    $<$<CONFIG:Release>:-Wall -Werror>
+)
 target_link_libraries(
     dns_resolver_impl_obj
     PRIVATE

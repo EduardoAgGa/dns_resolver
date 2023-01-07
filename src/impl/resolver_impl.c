@@ -9,10 +9,6 @@
 
 static ares_channel channel;
 
-static void state_cb(void* data, int fd, int read, int write) {
-  printf("Change state fd %d read:%d write:%d\n", fd, read, write);
-}
-
 result_t resolver_service_create(void) {
   struct ares_options options;
   int optmask = 0;
@@ -26,10 +22,8 @@ result_t resolver_service_create(void) {
   options.timeout
       = 1000;  // ! Time to respond to a query on the first try, then it scales linearly.
   options.tries = 2;
-  // options.sock_state_cb = state_cb;
   optmask |= ARES_OPT_TIMEOUTMS;
   optmask |= ARES_OPT_TRIES;
-  // optmask |= ARES_OPT_SOCK_STATE_CB;
 
   status = ares_init_options(&channel, &options, optmask);
   if (status != ARES_SUCCESS) {
@@ -92,6 +86,7 @@ static void set_hints(struct ares_addrinfo_hints* hints) {
 
 void resolver_service_resolve(const char* hostname, const char* nameserver, char* address) {
   struct ares_addrinfo_hints hints;
+  memset(&hints, 0, sizeof(struct ares_addrinfo_hints));
   set_hints(&hints);
   ares_getaddrinfo(channel, hostname, nameserver, &hints, dns_callback_addrinfo, address);
   wait_for_result(channel);
