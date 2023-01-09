@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TIMEOUT_MS 1000
+
 static ares_channel channel;
 
 result_t resolver_service_create(void) {
@@ -20,7 +22,7 @@ result_t resolver_service_create(void) {
   }
 
   options.timeout
-      = 1000;  // ! Time to respond to a query on the first try, then it scales linearly.
+      = TIMEOUT_MS;  // ! Time to respond to a query on the first try, then it scales linearly.
   options.tries = 2;
   optmask |= ARES_OPT_TIMEOUTMS;
   optmask |= ARES_OPT_TRIES;
@@ -60,9 +62,9 @@ void dns_callback_addrinfo(void* arg, int status, int timeouts, struct ares_addr
 
 void wait_for_result(ares_channel channel) {
   for (;;) {
-    struct timeval *tvp, tv;
+    struct timeval *tvp = NULL, tv;
     fd_set read_fds, write_fds;
-    int nfds;
+    int nfds = 0;
 
     FD_ZERO(&read_fds);
     FD_ZERO(&write_fds);

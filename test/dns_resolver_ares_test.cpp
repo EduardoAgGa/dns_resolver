@@ -1,31 +1,35 @@
 #include "doctest.h"
 
+#include <array>
 #include <cstring>
+#include <string>
 
 #include "dns_resolver.h"
 
-static const char* localhost_name = "localhost";
-static const char* expected_localhost_addr = "127.0.0.1";
-static const char* valid_nameserver = "8.8.8.8";
-static const char* valid_secondary_nameserver = "8.8.4.4";
-static const char* valid_hostname = "google.com";
+static const char* const LOCALHOST_NAME = "localhost";
+static const char* const EXPECTED_LOCALHOST_ADDR = "127.0.0.1";
+static const char* const VALID_NAMESERVER = "8.8.8.8";
+static const char* const VALID_SECONDARY_NAMESERVER = "8.8.4.4";
+static const char* const VALID_HOSTNAME = "google.com";
+
+static constexpr size_t BUFFER_SIZE = 16;
 
 static void print_address(const char* address) {
-  char buffer[16];
-  strcpy(buffer, address);
-  MESSAGE("The address is: ", buffer);
+  std::array<char, BUFFER_SIZE> buffer{};
+  strcpy(buffer.data(), address);
+  MESSAGE("The address is: ", std::string{buffer.data()});
 }
 
 TEST_CASE("Querying the nameserver for a valid hostname succeeds") {
   dns_resolver_create();
 
-  char* address;
-  char* secondary_address;
-  dns_resolve_hostname(valid_hostname, valid_nameserver, &address);
-  dns_resolve_hostname(valid_hostname, valid_secondary_nameserver, &secondary_address);
+  char* address = nullptr;
+  char* secondary_address = nullptr;
+  dns_resolve_hostname(VALID_HOSTNAME, VALID_NAMESERVER, &address);
+  dns_resolve_hostname(VALID_HOSTNAME, VALID_SECONDARY_NAMESERVER, &secondary_address);
 
-  REQUIRE_NE(0, strcmp(expected_localhost_addr, address));
-  REQUIRE_NE(0, strcmp(expected_localhost_addr, secondary_address));
+  REQUIRE_NE(0, strcmp(EXPECTED_LOCALHOST_ADDR, address));
+  REQUIRE_NE(0, strcmp(EXPECTED_LOCALHOST_ADDR, secondary_address));
 
   print_address(address);
   print_address(secondary_address);
